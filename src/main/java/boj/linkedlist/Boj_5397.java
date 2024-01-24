@@ -3,9 +3,7 @@ package boj.linkedlist;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.Stack;
 
 public class Boj_5397 {
     public static void main(String[] args) throws IOException {
@@ -13,27 +11,39 @@ public class Boj_5397 {
 
         int n = Integer.parseInt(br.readLine());
 
-        List<Character> list = new LinkedList<>();
-
-        String[] strArr = new String[n];
-
-        int index = 0;
+        StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < n; i++) {
-            strArr[i] = br.readLine();
+            char[] str = br.readLine().toCharArray();
 
-            for (int j = 0; j < strArr[i].length(); i++) {
-                list.add(strArr[i].charAt(j));
-            }
+            Stack<Character> left = new Stack<>();
 
-            for (int j = 0; j < strArr[j].length(); j++) {
-
-                if (list.get(j) == '<') {
-
+            Stack<Character> right = new Stack<>();
+            for (int j = 0; j < str.length; j++) {
+                if (str[j] == '<') {
+                    if (!left.isEmpty()) {
+                        right.add(left.pop());
+                    }
+                } else if (str[j] == '>') {
+                    if (!right.isEmpty()) {
+                        left.add(right.pop());
+                    }
+                } else if (str[j] == '-') {
+                    if (!left.isEmpty()) {
+                        left.pop();
+                    }
+                } else {
+                    left.add(str[j]);
                 }
-
             }
-
+            for (int j = 0; j < left.size(); j++) {
+                sb.append(left.get(j));
+            }
+            for (int j = right.size() - 1; j >= 0; j--) {
+                sb.append(right.get(j));
+            }
+            sb.append("\n");
         }
+        System.out.print(sb);
     }
 }
