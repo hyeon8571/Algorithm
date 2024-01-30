@@ -9,42 +9,49 @@ import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class boj_2493 {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws NumberFormatException, IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         int n = Integer.parseInt(br.readLine());
 
-        Stack<Integer> stack = new Stack<>();
+        int[] result = new int[n];
 
-        List<Integer> result = new ArrayList<>();
+        //int[] height = new int[n];
+
+        List<Integer> height = new ArrayList<>();
+
+        Stack<Integer> stack = new Stack<>();
 
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int height = 0;
+        for (int i = 0; i < n; i++) {
+
+            height.add(Integer.parseInt(st.nextToken()));
+        }
+
+        StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < n; i++) {
-            height = Integer.parseInt(st.nextToken());
-            if (stack.isEmpty()) {
-                result.add(0);
-                stack.push(height);
-            } else if (height < stack.peek()){
-                result.add(stack.size());
-                stack.push(height);
-            } else {
-                int idx = stack.size() - 1;
-                while (height < stack.get(idx)) {
-                    idx--;
-                    if (idx < 1) {
-                        result.add(0);
-                        stack.push(height);
-                        break;
-                    }
-                }
+
+            while (!stack.isEmpty() && stack.peek() < height.get(i)) {
+                stack.pop();
             }
+
+            if (stack.isEmpty()) {
+                stack.push(height.get(i));
+                result[i] = 0;
+            } else if (stack.peek() > height.get(i)) {
+                int loc = height.indexOf(stack.peek());
+                result[i] = loc + 1;
+                stack.push(height.get(i));
+            }
+
         }
 
         for (int i = 0; i < n; i++) {
-            System.out.print(result.get(i) + " ");
+            sb.append(result[i]).append(" ");
         }
+
+        System.out.print(sb);
     }
 }
