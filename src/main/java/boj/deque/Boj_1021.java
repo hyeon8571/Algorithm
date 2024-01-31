@@ -29,7 +29,7 @@ public class Boj_1021 {
         LinkedList<Integer> deque = new LinkedList<>();
 
         for (int i = 0; i < num; i++) {
-            arr[i] = Integer.parseInt(st.nextToken()); // 1 2 3
+            arr[i] = Integer.parseInt(st.nextToken()); // 10 9 8 7 6 5 4 3 2 1
         }
 
         for (int i = 1; i <= totalNum; i++) {
@@ -43,7 +43,7 @@ public class Boj_1021 {
                 findIdx++;
             } else {
                 while(arr[findIdx] != deque.peekFirst()) {
-                    if (deque.indexOf(arr[findIdx]) + 1 > deque.size() / 2) {
+                    if (deque.indexOf(arr[findIdx])  > deque.size() / 2) {
                         deque.offerFirst(deque.pollLast());
                         result++;
                     } else {
