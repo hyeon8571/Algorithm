@@ -26,6 +26,14 @@ public class DiceTest {
                 isSelected = new boolean[7]; // 주사위눈이 사용되었는지 여부 관리
                 dice2(0);
                 break;
+
+            case 3: // 중복 조합
+                dice3(0, 1);
+                break;
+
+            case 4: // 조합
+                dice4(0, 1);
+                break;
         }
     }
 
@@ -59,6 +67,34 @@ public class DiceTest {
             isSelected[i] = true;
             dice2(cnt+1);
             isSelected[i] = false;
+        }
+    }
+
+    // 중복 조합
+    private static void dice3(int cnt, int start) {
+        if (cnt == N) {
+            System.out.println(Arrays.toString(numbers));
+            return;
+        }
+
+        // 시작점부터 가능한 끝까지 선택하는 시도
+        for (int i = start; i <= 6; i++) {
+            numbers[cnt] = i; // 선택한 수 저장
+            dice3(cnt+1, i);
+        }
+    }
+
+    // 조합
+    private static void dice4(int cnt, int start) {
+        if (cnt == N) {
+            System.out.println(Arrays.toString(numbers));
+            return;
+        }
+
+        // 시작점부터 가능한 끝까지 선택하는 시도
+        for (int i = start; i <= 6; i++) {
+            numbers[cnt] = i; // 선택한 수 저장
+            dice4(cnt+1, i+1);
         }
     }
 }
