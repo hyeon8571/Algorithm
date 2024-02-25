@@ -52,6 +52,7 @@ public class DiceTest {
     }
 
 
+    // 순열
     private static void dice2(int cnt) { // 주사위 던지기(cnt: 기존까지 던진 주사위 횟수)
 
         if (cnt == N) {
@@ -98,3 +99,4 @@ public class DiceTest {
         }
     }
 }
+
