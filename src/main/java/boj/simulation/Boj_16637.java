@@ -34,7 +34,7 @@ public class Boj_16637 {
         visited = new boolean[operatorList.size()];
 
 
-        subset(0);
+        //subset(0);
 
     }
 
@@ -58,8 +58,8 @@ public class Boj_16637 {
         }
 
         visited[depth] = true;
-        subset(depth + 1);
+       // subset(depth + 1);
         visited[depth] = false;
-        subset(depth + 1);
+       // subset(depth + 1);
     }
 }
