@@ -66,31 +66,29 @@ public class Main {
 
         move(start.y, start.x);
 
-        if (flag) {
-            System.out.println("KAKTUS");
-            return;
-        }
-
         if (visited[end.y][end.x] == 0) {
             System.out.println("KAKTUS");
         } else {
-            System.out.println(visited[end.y][end.x]);
+            System.out.println(visited[end.y][end.x] - 1);
         }
 
     }
 
     public static void move(int startY, int startX) {
 
-        int max = 0;
+        int max = 1;
         ArrayDeque<Place> queue = new ArrayDeque<>();
-
         water();
         queue.add(new Place(startY, startX));
-
+        visited[startY][startX] = 1;
 
         while (!queue.isEmpty()) {
             Place now = queue.pollFirst();
 
+            if (visited[now.y][now.x] > max) {
+                max = visited[now.y][now.x];
+                water();
+            }
 
             for (int i = 0; i < 4; i++) {
                 int nx = now.x + dx[i];
@@ -99,10 +97,6 @@ public class Main {
                 if (0 <= nx && nx < C && 0 <= ny && ny < R) {
                     if ((grid[ny][nx] == '.' || grid[ny][nx] == 'D') && visited[ny][nx] == 0) {
                         visited[ny][nx] = visited[now.y][now.x] + 1;
-                        if (visited[ny][nx] > max) {
-                            max = visited[ny][nx];
-                            water();
-                        }
                         queue.add(new Place(ny, nx));
                     }
                 }
@@ -136,7 +130,6 @@ public class Main {
                 }
             }
         }
-
 
 
     }
