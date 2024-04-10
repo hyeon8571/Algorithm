@@ -6,15 +6,15 @@ import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.StringTokenizer;
 
-public class Solution {
+public class Solution{
 
     static class Place {
-        int y, x, distance;
+        int y, x, level;
 
-        public Place(int y, int x, int distance) {
+        public Place (int y, int x, int level) {
             this.y = y;
             this.x = x;
-            this.distance = distance;
+            this.level = level;
         }
     }
 
@@ -24,12 +24,11 @@ public class Solution {
 
     static boolean[][] visited;
 
+    static int result;
+
     static int[] dx = new int[] {0, 1, 0, -1};
 
     static int[] dy = new int[] {-1, 0, 1, 0};
-
-    static int result;
-
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -37,6 +36,7 @@ public class Solution {
         int tc = Integer.parseInt(br.readLine());
 
         for (int t = 1; t <= tc; t++) {
+
             StringTokenizer st = new StringTokenizer(br.readLine());
 
             N = Integer.parseInt(st.nextToken());
@@ -47,7 +47,6 @@ public class Solution {
 
             result = 0;
 
-
             for (int i = 0; i < N; i++) {
                 st = new StringTokenizer(br.readLine());
                 for (int j = 0; j < N; j++) {
@@ -57,6 +56,7 @@ public class Solution {
 
             for (int i = 0; i < N; i++) {
                 for (int j = 0; j < N; j++) {
+                    visited = new boolean[N][N];
                     homeservice(i, j);
                 }
             }
@@ -64,27 +64,16 @@ public class Solution {
             System.out.println("#" + t + " " + result);
 
         }
-
     }
 
-    // distance = |ax - bx| + |ay - by|
-    public static void homeservice(int y, int x) {
-        visited = new boolean[N][N];
-
-        // k 넓히기 (모든 맵을 다 포함할 때 까지)
-        spread(y, x);
-    }
-
-    public static void spread(int startY, int startX) {
+    public static void homeservice(int startY, int startX) {
         ArrayDeque<Place> queue = new ArrayDeque<>();
-
-        queue.add(new Place(startY, startX, 0));
 
         visited[startY][startX] = true;
 
-        int distance = 0;
+        queue.add(new Place(startY, startX, 1));
 
-        int profit = 0;
+        int profit =  0;
 
         if (grid[startY][startX] == 1) {
             profit = M - 1;
@@ -98,50 +87,48 @@ public class Solution {
             }
         }
 
-        while (!queue.isEmpty()) {
+        int distance = 1;
 
+        while (!queue.isEmpty()) {
             Place now = queue.pollFirst();
 
-            // 다음 범위를 담음
-            if (distance < now.distance) {
-                int k = distance + 2;
+            if (now.level > distance) {
+                distance = now.level;
 
                 int cnt = 0;
+
                 for (int i = 0; i < N; i++) {
                     for (int j = 0; j < N; j++) {
-                        if (grid[i][j] == 1 && visited[i][j]) {
+                        if (visited[i][j] && grid[i][j] == 1) {
                             cnt++;
                         }
                     }
                 }
 
-                profit = ((M * cnt) - ((k) * (k) + (k - 1) * (k - 1)));
+                profit = M*cnt - (distance * distance + (distance - 1) * (distance - 1));
 
-                if (profit >= 0 && cnt > result) {
-                    result = cnt;
+                if (profit >= 0) {
+                    if (cnt > result) {
+                        result = cnt;
+                    }
                 }
-
-                distance = now.distance;
 
             }
 
             for (int i = 0; i < 4; i++) {
-                int ny = now.y + dy[i];
                 int nx = now.x + dx[i];
 
-                if (0 <= ny && ny < N && 0 <= nx && nx < N) {
-                    if ((Math.abs(ny - startY) + Math.abs(nx - startX)) == now.distance + 1) {
-                        if (!visited[ny][nx]) {
-                            visited[ny][nx] = true;
-                            queue.add(new Place(ny, nx, now.distance + 1));
+                int ny = now.y + dy[i];
 
-                        }
+                if (0 <= nx && nx < N && 0 <= ny && ny < N) {
+
+                    if (!visited[ny][nx]) {
+                        visited[ny][nx] = true;
+                        queue.add(new Place(ny, nx, now.level + 1));
                     }
                 }
             }
-
         }
 
     }
-
 }
