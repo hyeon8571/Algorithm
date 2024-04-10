@@ -1,3 +1,5 @@
+
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -5,19 +7,17 @@ import java.util.StringTokenizer;
 
 public class Solution {
 
+    static int N;
+
     static int[] num;
-
-    static boolean[] visited;
-
-    static int[] arr;
 
     static int[] operator;
 
-    static int N;
+    static int[] arr;
 
-    static int resultMin, resultMax;
+    static int max, min;
 
-    public static void main(String[] args) throws NumberFormatException, IOException {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         int tc = Integer.parseInt(br.readLine());
@@ -25,30 +25,14 @@ public class Solution {
         for (int t = 1; t <= tc; t++) {
             N = Integer.parseInt(br.readLine());
 
-            operator = new int[4];
-
             num = new int[N];
 
-            visited = new boolean[N-1];
-
-            arr = new int[N-1];
-
-            resultMin = Integer.MAX_VALUE;
-
-            resultMax = Integer.MIN_VALUE;
+            operator = new int[4];
 
             StringTokenizer st = new StringTokenizer(br.readLine());
 
-            int cnt = 0;
-
-            while (st.hasMoreTokens()) {
-
-                int n = Integer.parseInt(st.nextToken());
-
-                for (int i = 0; i < n; i++) {
-                    operator[cnt]++;
-                }
-                cnt++;
+            for (int i = 0; i < 4; i++) {
+                operator[i] = Integer.parseInt(st.nextToken());
             }
 
             st = new StringTokenizer(br.readLine());
@@ -57,74 +41,78 @@ public class Solution {
                 num[i] = Integer.parseInt(st.nextToken());
             }
 
+            max = Integer.MIN_VALUE;
+
+            min = Integer.MAX_VALUE;
+
+            arr = new int[N-1];
+
+            // 중복 순열
             makePermutation(0);
 
-            System.out.println("#" + t + " " + (resultMax - resultMin));
-
+            System.out.println("#" + t + " " + (max - min));
         }
     }
 
+    // 중복순열
     public static void makePermutation(int depth) {
-
         if (depth == N-1) {
 
-            int plusCnt = 0;
+            int plus = 0;
+            int minus = 0;
+            int multiple = 0;
+            int mod = 0;
 
-            int minusCnt = 0;
 
-            int multipleCnt = 0;
-
-            int subCnt = 0;
-
-            for (int i = 0; i < arr.length; i++) {
+            for (int i = 0; i < N-1; i++) {
                 if (arr[i] == 0) {
-                    plusCnt++;
+                    plus++;
                 } else if (arr[i] == 1) {
-                    minusCnt++;
+                    minus++;
                 } else if (arr[i] == 2) {
-                    multipleCnt++;
+                    multiple++;
                 } else {
-                    subCnt++;
+                    mod++;
                 }
             }
 
-            if (plusCnt == operator[0] && minusCnt == operator[1] && multipleCnt == operator[2] && subCnt == operator[3]) {
+            if (plus == operator[0] && minus == operator[1] && multiple == operator[2] && mod == operator[3]) {
                 calculate(arr);
             }
 
             return;
         }
 
-        for (int i = 0; i < operator.length; i++) {
-
+        for (int i = 0; i < 4; i++) {
             arr[depth] = i;
             makePermutation(depth + 1);
         }
 
     }
 
-    public static void calculate(int[] oper) {
+    public static void calculate(int[] arr) {
+
         int result = num[0];
-        for (int i = 0; i < oper.length; i++) {
-            if (oper[i] == 0) {
+
+        for (int i = 0; i < N-1; i++) {
+            if (arr[i] == 0) {
                 result += num[i+1];
-            } else if (oper[i] == 1) {
+            } else if (arr[i] == 1) {
                 result -= num[i+1];
-            } else if (oper[i] == 2) {
+            } else if (arr[i] == 2) {
                 result *= num[i+1];
             } else {
                 result /= num[i+1];
             }
         }
 
-        if (result < resultMin) {
-            resultMin = result;
+        if (result > max) {
+            max = result;
         }
 
-        if (result > resultMax) {
-            resultMax = result;
+        if (result < min) {
+            min = result;
         }
-
     }
 
 }
