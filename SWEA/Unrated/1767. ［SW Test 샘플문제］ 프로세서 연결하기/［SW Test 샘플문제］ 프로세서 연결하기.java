@@ -95,9 +95,8 @@ public class Solution {
 				continue;
 			}
 			
-			backtracking(depth + 1, cnt, length);
-			
 		}
+		backtracking(depth + 1, cnt, length);
 		
 	}
 	
