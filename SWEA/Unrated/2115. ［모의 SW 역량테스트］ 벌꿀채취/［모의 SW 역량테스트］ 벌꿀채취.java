@@ -1,5 +1,3 @@
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,9 +9,13 @@ public class Solution {
 	
 	static int[][] grid;
 	
-	static int result1, result2, result;
+	static int[] A;
 	
-	static int[] honey1, honey2;
+	static int[] B;
+	
+	static int result, result1, result2;
+	
+	static int dap;
 	
 	static boolean[] visited;
 	
@@ -26,22 +28,17 @@ public class Solution {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			
 			N = Integer.parseInt(st.nextToken());
-			
 			M = Integer.parseInt(st.nextToken());
-			
 			C = Integer.parseInt(st.nextToken());
 			
-			grid = new int[N][N];
-
-			honey1 = new int[M];
-			
-			honey2 = new int[M];
-			
-			result1 = 0;
-			
-			result2 = 0;
+			A = new int[M];
+			B = new int[M];
 			
 			result = 0;
+			result1 = 0;
+			result2 = 0;
+			
+			grid = new int[N][N];
 			
 			for (int i = 0; i < N; i++) {
 				st = new StringTokenizer(br.readLine());
@@ -50,113 +47,109 @@ public class Solution {
 				}
 			}
 			
-			
-			findHoney1();
+			choiceA();
 			
 			System.out.println("#" + t + " " + result);
-			
 		}
 	}
 	
-	public static void findHoney1() {
-		
+	public static void choiceA() {
 		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N-(M-1); j++) {
+			for (int j = 0; j <= N - M; j++) {
 				
 				for (int k = 0; k < M; k++) {
-					honey1[k] = grid[i][j+k]; // 첫 일꾼 채집
+					A[k] = grid[i][j+k];
 				}
 				
 				visited = new boolean[M];
-				result1 = 0;
-				makePowerset(0, honey1, 1);
-				result2 = 0;
-				findHoney2(i, j);
+				dap = 0;
+				makePowerSet(0, A);
+				result1 = dap;
 				
-				if (result1 + result2 > result) {
-					result = result1 + result2;
-				}
+				choiceB(i, j);
+				
 			}
 		}
 	}
 	
-	public static void findHoney2(int honey1Y, int honey1X) {
+	public static void choiceB(int Ay, int Ax) {
 		
-		int startX = honey1X + M;
-		int startY = honey1Y;
-		
-		if (honey1X + M + (M -1) > N-1) {
-			startX = 0;
-			startY = honey1Y + 1;
-		} 
-		
-		for (int i = startY; i < N; i++) {
-			if (i == honey1Y) {
-				for (int j = startX; j < N-(M-1); j++) {
+		for (int i = Ay; i < N; i++) {
+			
+			if (i == Ay && (Ax + M + M - 1) <= N - 1) {
+				for (int j = Ax + M; j <= N - M; j++) {
 					
 					for (int k = 0; k < M; k++) {
-						honey2[k] = grid[i][j+k];
-					}
+						B[k] = grid[i][j+k];
+					}		
 					
 					visited = new boolean[M];
-					makePowerset(0, honey2, 2);
+					dap = 0;
+					makePowerSet(0, B);
+					result2 = dap;
+					
+					if (result1 + result2 > result) {
+						result = result1 + result2;
+					}
+					
 				}
-				continue;
-			}
-			for (int j = 0; j < N-(M-1); j++) {
-				
-				for (int k = 0; k < M; k++) {
-					honey2[k] = grid[i][j+k];
+			} else if (i != Ay){
+				for (int j = 0; j <= N - M; j++) {
+					
+					for (int k = 0; k < M; k++) {
+						B[k] = grid[i][j+k];
+					}		
+					
+					visited = new boolean[M];
+					dap = 0;
+					makePowerSet(0, B);
+					result2 = dap;
+					
+					if (result1 + result2 > result) {
+						result = result1 + result2;
+					}
+					
 				}
-				
-				visited = new boolean[M];
-				makePowerset(0, honey2, 2);
-				
 			}
+			
+			
 		}
 	}
 	
-	public static void makePowerset(int depth, int[] honey, int type) {
+	public static void makePowerSet(int depth, int[] honey) {
+		
 		if (depth == M) {
 			
-			int sum = 0;
+			int gap = 0;
+			
+			int gop = 0;
 			
 			for (int i = 0; i < M; i++) {
 				if (visited[i]) {
-					sum += honey[i];
+					gap += honey[i];
 				}
 			}
 			
-			if (sum > C) {
-				return;
-			} else {
-				int cnt = 0;
+			if (gap <= C) {
 				for (int i = 0; i < M; i++) {
 					if (visited[i]) {
-						cnt += Math.pow(honey[i], 2);
+						gop += Math.pow(honey[i], 2);
 					}
 				}
-				
-				if (type == 1) {
-					if (cnt > result1) {
-						result1 = cnt;
-					}
-				} else {
-					if (cnt > result2) {
-						result2 = cnt;
-					}
-				}
-				
 			}
 			
+			if (gop > dap) {
+				dap = gop;
+			}
 			
 			return;
 		}
 		
 		visited[depth] = true;
-		makePowerset(depth + 1, honey, type);
+		makePowerSet(depth + 1, honey);
 		visited[depth] = false;
-		makePowerset(depth + 1, honey, type);
+		makePowerSet(depth + 1, honey);
 	}
+	
 	
 }
