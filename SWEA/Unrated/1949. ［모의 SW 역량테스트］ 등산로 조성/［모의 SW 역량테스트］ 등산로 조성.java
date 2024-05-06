@@ -1,5 +1,3 @@
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,11 +5,20 @@ import java.util.StringTokenizer;
 
 public class Solution {
 
-    static int N, K;
+    static class Place {
+        int y, x;
+
+        public Place(int y, int x) {
+            this.y = y;
+            this.x = x;
+        }
+    }
+
+    static int N;
+
+    static int K;
 
     static int[][] grid;
-
-    static boolean[][] visited;
 
     static int[] dx = new int[] {0, 1, 0, -1};
 
@@ -19,13 +26,15 @@ public class Solution {
 
     static int result;
 
+    static boolean[][] visited;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         int tc = Integer.parseInt(br.readLine());
 
         for (int t = 1; t <= tc; t++) {
-            StringTokenizer st =  new StringTokenizer(br.readLine());
+            StringTokenizer st = new StringTokenizer(br.readLine());
 
             N = Integer.parseInt(st.nextToken());
 
@@ -41,7 +50,6 @@ public class Solution {
                 st = new StringTokenizer(br.readLine());
                 for (int j = 0; j < N; j++) {
                     grid[i][j] = Integer.parseInt(st.nextToken());
-
                     if (grid[i][j] > max) {
                         max = grid[i][j];
                     }
@@ -63,33 +71,39 @@ public class Solution {
         }
     }
 
-    public static void dfs(int startY, int startX, boolean can, int cnt) {
-
-        if (cnt > result) {
-            result = cnt;
-        }
+    public static void dfs(int startY, int startX, boolean flag, int cnt) {
 
         for (int i = 0; i < 4; i++) {
             int nx = startX + dx[i];
-
             int ny = startY + dy[i];
 
-            if (0 <= nx && nx < N && 0 <= ny && ny < N && !visited[ny][nx]) {
+            if (0 <= nx && nx < N && 0 <= ny && ny < N  && !visited[ny][nx]) {
                 if (grid[ny][nx] < grid[startY][startX]) {
                     visited[ny][nx] = true;
-                    dfs(ny, nx, can, cnt+1);
+                    dfs(ny, nx, flag, cnt + 1);
                     visited[ny][nx] = false;
                 } else {
-                    if (!can && (grid[ny][nx] - grid[startY][startX]) < K) {
+                    if (grid[ny][nx] - K < grid[startY][startX] && !flag) {
+
                         int tmp = grid[ny][nx];
                         grid[ny][nx] = grid[startY][startX] - 1;
                         visited[ny][nx] = true;
-                        dfs(ny, nx, true, cnt+1);
+                        dfs(ny, nx, true, cnt + 1);
                         grid[ny][nx] = tmp;
                         visited[ny][nx] = false;
+
+                    } else {
+                        if (cnt > result) {
+                            result = cnt;
+
+                        }
                     }
                 }
             }
+
+
         }
+
     }
+
 }
