@@ -1,18 +1,15 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class Solution {
+public class Solution{
 
     static int D, W, K;
 
     static int[][] grid;
 
-    static int[] fill;
-
-    static int[] arr;
+    static int[] medicine;
 
     static int result;
 
@@ -25,14 +22,10 @@ public class Solution {
             StringTokenizer st = new StringTokenizer(br.readLine());
 
             D = Integer.parseInt(st.nextToken());
-
             W = Integer.parseInt(st.nextToken());
-
             K = Integer.parseInt(st.nextToken());
 
             grid = new int[D][W];
-
-            fill = new int[D];
 
             result = Integer.MAX_VALUE;
 
@@ -44,13 +37,38 @@ public class Solution {
             }
 
             if (K == 1) {
-                System.out.println("#" + t + " " + "0");
+                System.out.println("#" + t + " " + 0);
                 continue;
             }
+
+            medicine = new int[D];
 
             backtracking(0, 0);
 
             System.out.println("#" + t + " " + result);
+
+        }
+    }
+
+    public static void backtracking(int depth, int startIdx) {
+
+        if (depth >= result) {
+            return;
+        }
+
+        if (test()) {
+            if (depth < result) {
+                result = depth;
+                return;
+            }
+        }
+
+        for (int i = startIdx; i < D; i++) {
+            medicine[i] = 1;
+            backtracking(depth + 1, i + 1);
+            medicine[i] = 2;
+            backtracking(depth + 1, i + 1);
+            medicine[i] = 0;
         }
     }
 
@@ -66,35 +84,32 @@ public class Solution {
 
             for (int j = 0; j < D; j++) {
 
-                if (fill[j] == 1) {
-                    if (j == 0) {
-                        cnt = 1;
-                        prev = 0;
-                    } else {
-                        if (0 == prev) {
-                            cnt++;
-                        } else {
+                if (medicine[j] != 0) {
+                    if (medicine[j] == 1) {
+                        if (j == 0) {
+                            cnt = 1;
                             prev = 0;
-                            cnt = 1;
-                        }
-
-                    }
-
-                } else if (fill[j] == 2) {
-
-                    if (j == 0) {
-                        cnt = 1;
-                        prev = 1;
-                    } else {
-                        if (1 == prev) {
-                            cnt++;
                         } else {
-                            prev = 1;
-                            cnt = 1;
+                            if (prev == 0) {
+                                cnt++;
+                            } else {
+                                cnt = 1;
+                                prev = 0;
+                            }
                         }
-
+                    } else {
+                        if (j == 0) {
+                            cnt = 1;
+                            prev = 1;
+                        } else {
+                            if (prev == 1) {
+                                cnt++;
+                            } else {
+                                cnt = 1;
+                                prev = 1;
+                            }
+                        }
                     }
-
                 } else {
                     if (j == 0) {
                         cnt = 1;
@@ -106,15 +121,14 @@ public class Solution {
                             prev = grid[j][i];
                             cnt = 1;
                         }
-
                     }
                 }
 
                 if (cnt > max) {
                     max = cnt;
                 }
-            }
 
+            }
 
             if (max < K) {
                 return false;
@@ -123,29 +137,6 @@ public class Solution {
         }
 
         return true;
-
     }
 
-    static void backtracking(int depth, int startIdx) {
-
-            if (depth >= result) {
-                return;
-            }
-
-
-            if (test()) {
-                if (depth < result) {
-                    result = depth;
-                    return;
-                }
-            }
-            
-        for (int i = startIdx; i < D; i++) {
-            fill[i] = 1;
-            backtracking(depth + 1, i + 1);
-            fill[i] = 2;
-            backtracking(depth + 1, i + 1);
-            fill[i] = 0;
-        }
-    }
 }
