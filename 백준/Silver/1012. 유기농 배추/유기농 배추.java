@@ -1,43 +1,41 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main {
 
-    static class Place {
-        int x, y;
+    static int M;
+    static int N;
 
-        public Place(int y, int x) {
-            this.x = x;
-            this.y = y;
-        }
-    }
-
-    static int[] dx = {0, 1, 0, -1};
-    static int[] dy = {-1, 0, 1, 0};
-
-    static int N, M;
     static int[][] grid;
     static boolean[][] visited;
 
-    public static void main(String[] args) throws IOException {
+    static int[] dirX = new int[] {0, 1, 0, -1};
+    static int[] dirY = new int[] {-1, 0, 1, 0};
+
+    static class Place {
+        int y;
+        int x;
+
+        public Place(int y, int x) {
+            this.y = y;
+            this.x = x;
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int tc = Integer.parseInt(br.readLine());
+        int T = Integer.parseInt(br.readLine());
 
-        for (int i = 0; i < tc; i++) {
+        for (int i = 0; i < T; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
 
-            M = Integer.parseInt(st.nextToken());
-            N = Integer.parseInt(st.nextToken());
+            M = Integer.parseInt(st.nextToken()); // 가로
+            N = Integer.parseInt(st.nextToken()); // 세로
+            int K = Integer.parseInt(st.nextToken());
 
             grid = new int[N][M];
             visited = new boolean[N][M];
-
-            int K =  Integer.parseInt(st.nextToken());
 
             for (int j = 0; j < K; j++) {
                 st = new StringTokenizer(br.readLine());
@@ -57,23 +55,23 @@ public class Main {
                     }
                 }
             }
-
             System.out.println(result);
         }
     }
 
-    public static void bfs(int startY, int startX) {
+    public static void bfs(int y, int x) {
         Queue<Place> queue = new ArrayDeque<>();
 
-        queue.add(new Place(startY, startX));
+        queue.add(new Place(y, x));
 
         while (!queue.isEmpty()) {
             Place p = queue.poll();
-            for (int i = 0; i < 4; i++) {
-                int ny = p.y + dy[i];
-                int nx = p.x + dx[i];
 
-                if (0 <= ny && ny <= N - 1 && 0 <= nx && nx <= M - 1) {
+            for (int i = 0; i < 4; i++) {
+                int ny = p.y + dirY[i];
+                int nx = p.x + dirX[i];
+
+                if (0 <= ny && ny <= N-1 && 0 <= nx && nx <= M-1) {
                     if (grid[ny][nx] == 1 && !visited[ny][nx]) {
                         visited[ny][nx] = true;
                         queue.add(new Place(ny, nx));
@@ -81,6 +79,5 @@ public class Main {
                 }
             }
         }
-
     }
 }
