@@ -1,46 +1,38 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main {
 
-    static int N, M;
-
-    static int[] result;
-
+    static int N;
+    static int M;
+    static int[] choice;
     static StringBuilder sb = new StringBuilder();
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        N = sc.nextInt();
+        M = sc.nextInt();
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        choice = new int[M];
 
-        N = Integer.parseInt(st.nextToken());
 
-        M = Integer.parseInt(st.nextToken());
-
-        result = new int[M];
-
-        // 중복순열
         duplePermutation(0);
 
         System.out.println(sb);
-
     }
 
     public static void duplePermutation(int depth) {
         if (depth == M) {
             for (int i = 0; i < M; i++) {
-                sb.append(result[i] + " ");
+                sb.append(choice[i]).append(" ");
             }
             sb.append("\n");
             return;
         }
 
         for (int i = 1; i <= N; i++) {
-            result[depth] = i;
-            duplePermutation(depth + 1);
+            choice[depth] = i;
+            duplePermutation(depth+1);
         }
     }
 }
