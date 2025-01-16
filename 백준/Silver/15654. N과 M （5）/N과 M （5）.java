@@ -1,50 +1,41 @@
-import java.io.BufferedReader;
-
+import java.util.*;
 import java.io.*;
-import java.util.Arrays;
-import java.util.StringTokenizer;
 
 public class Main {
 
     static int N, M;
-
-    static int[] arr;
-
-    static int[] result;
-
+    static int[] numArr;
     static boolean[] visited;
-
+    static int[] choice;
     static StringBuilder sb = new StringBuilder();
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
+        numArr = new int[N];
+        choice = new int[M];
+        visited = new boolean[N];
+
         st = new StringTokenizer(br.readLine());
 
-        arr = new int[N];
-
         for (int i = 0; i < N; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
+            numArr[i] = Integer.parseInt(st.nextToken());
         }
+        Arrays.sort(numArr);
 
-        Arrays.sort(arr);
-
-        visited = new boolean[N];
-        result = new int[M];
-
-        permutation(0);
-
+        makePermutation(0);
         System.out.println(sb);
     }
 
-    public static void permutation(int depth) {
+    public static void makePermutation(int depth) {
         if (depth == M) {
             for (int i = 0; i < M; i++) {
-                sb.append(result[i] + " ");
+                sb.append(choice[i]).append(" ");
             }
             sb.append("\n");
             return;
@@ -54,10 +45,13 @@ public class Main {
             if (visited[i]) {
                 continue;
             }
+
+            choice[depth] = numArr[i];
             visited[i] = true;
-            result[depth] = arr[i];
-            permutation(depth + 1);
+            makePermutation(depth + 1);
             visited[i] = false;
         }
     }
+
+
 }
