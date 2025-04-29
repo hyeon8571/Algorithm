@@ -20,37 +20,42 @@ class Solution {
             String thisNum = "";
             String oNum = "";
             
-            // this.str 숫자 추출
-boolean headFlag = false;
-int idx = 0;
-for (int i = 0; i < this.str.length(); i++) {
-    if (!headFlag && Character.isDigit(this.str.charAt(i))) {
-        thisHead = this.str.substring(0, i);
-        idx = i;
-        headFlag = true;
-    }
-    if (headFlag && (i == this.str.length() - 1 || !Character.isDigit(this.str.charAt(i)))) {
-        thisNum = this.str.substring(idx, (Character.isDigit(this.str.charAt(i)) ? i + 1 : i));
-        break;
-    }
-}
-
-// o.str 숫자 추출
-headFlag = false;
-idx = 0;
-for (int i = 0; i < o.str.length(); i++) {
-    if (!headFlag && Character.isDigit(o.str.charAt(i))) {
-        oHead = o.str.substring(0, i);
-        idx = i;
-        headFlag = true;
-    }
-    if (headFlag && (i == o.str.length() - 1 || !Character.isDigit(o.str.charAt(i)))) {
-        oNum = o.str.substring(idx, (Character.isDigit(o.str.charAt(i)) ? i + 1 : i));
-        break;
-    }
-}
+            
+            boolean headFlag = false;
+            int idx = 0;
+            for (int i = 0; i < this.str.length(); i++) {
+                if (!headFlag && Character.isDigit(this.str.charAt(i))) {
+                    thisHead = this.str.substring(0, i);
+                    idx = i;
+                    headFlag = true;
+                }
+                
+                if (headFlag && !Character.isDigit(this.str.charAt(i))){
+                    thisNum = this.str.substring(idx, i);
+                    break;
+                }
+                thisNum = this.str.substring(idx, this.str.length());                      
+            }
 
             
+            headFlag = false;
+            idx = 0;
+            for (int i = 0; i < o.str.length(); i++) {
+                if (!headFlag && Character.isDigit(o.str.charAt(i))) {
+                    oHead = o.str.substring(0, i);
+                    idx = i;
+                    headFlag = true;
+                }
+                
+                if (headFlag && !Character.isDigit(o.str.charAt(i))) {
+                    oNum = o.str.substring(idx, i);
+                    break;
+                }
+                oNum = o.str.substring(idx, o.str.length());
+
+            }
+
+
             
             if (!thisHead.toUpperCase().equals(oHead.toUpperCase())) {
                 return thisHead.toUpperCase().compareTo(oHead.toUpperCase());
