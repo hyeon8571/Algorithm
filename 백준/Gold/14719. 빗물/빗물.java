@@ -26,7 +26,13 @@ public class Main {
         int count = 0;
         
         for (int i = 0; i < H; i++) {
+            int pass = -1;
             for (int j = 0; j < W; j++) {
+                
+                if (pass == j) {
+                        break;
+                    }
+                
                 if (grid[i][j] == 0) {
                     // 왼쪽 이동
                     int now = j;
@@ -35,6 +41,7 @@ public class Main {
                     while (true) {
                         now = now-1;
                         if (now < 0) {
+                            pass = j;
                             break;
                         }
                         
@@ -49,6 +56,7 @@ public class Main {
                     while (true) {
                         now = now+1;
                         if (now > W-1) {
+                            pass = j;
                             break;
                         }
                         
