@@ -15,9 +15,31 @@ public class Main {
         }
     }
     
+    public static class Dest implements Comparable<Dest> {
+        int dest;
+        int cost;
+        
+        public Dest(int dest, int cost) {
+            this.dest = dest;
+            this.cost = cost;
+        }
+        
+        @Override
+        public int compareTo(Dest o) {
+            if (this.cost - o.cost > 0) {
+                return 1;
+            } else if (this.cost - o.cost < 0) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    }
+    
     public static int N;
     public static HashMap<Integer, List<Road>> map;
     public static int[] distance;
+    public static int result;
     
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -47,36 +69,54 @@ public class Main {
             map.put(to, roadList2);
         }
         
-        bfs();
+        dijkstra();
         
         System.out.println(distance[N]);
         
     }
     
-    public static void bfs() {
+    public static void dijkstra() {
         int start = 1;
         distance = new int[N+1];
-        
-        Queue<Integer> queue = new ArrayDeque<>();
-        queue.add(start);
         distance[start] = 0;
         
-        while (!queue.isEmpty()) {
-            int now = queue.poll(); // from
+        PriorityQueue<Dest> pq = new PriorityQueue<>();
+        
+        List<Road> roadList = map.get(start);
+        
+        for (int i = 0; i < roadList.size(); i++) {
+            distance[roadList.get(i).to] = roadList.get(i).cost; // 첫 좌표 기준 다음 이동할 값
+            Dest dest = new Dest(roadList.get(i).to, roadList.get(i).cost); // 다음 갈 지점, 이때까지의 비용
+            pq.add(dest);
+        }
+        
+        while (!pq.isEmpty()) {
+            Dest now = pq.poll(); // 2 => 노드, 1 => 현재 지점까지 오는 총 비용
             
-            List<Road> list = map.get(now);
-            for (int i = 0; i < list.size(); i++) {
-                int next = list.get(i).to; // to
+            if (now.dest == N) {
+                return;
+            }
+            
+            roadList = map.get(now.dest); 
+            
+            for (int i = 0; i < roadList.size(); i++) { // 1 4 3
+                Road road = roadList.get(i); 
                 
-                if (distance[next] == 0) {
-                    distance[next] = distance[now] + list.get(i).cost;
-                    queue.add(next);
-                } else if (distance[next] > distance[now] + list.get(i).cost) {
-                    distance[next] = distance[now] + list.get(i).cost;
-                    queue.add(next);
+                if (road.to == 1) {
+                    continue;
+                }
+                
+                if (distance[road.to] == 0) {
+                    Dest next = new Dest(road.to, road.cost + distance[now.dest]);
+                    distance[road.to] = road.cost + distance[now.dest];
+                    pq.add(next);  
+                } else if (distance[road.to] > road.cost + distance[now.dest]) {
+                    Dest next = new Dest(road.to, road.cost + distance[now.dest]);
+                    distance[road.to] = road.cost + distance[now.dest];
+                    pq.add(next);
                 }
             }
-        }
+        } 
         
     }
 }
