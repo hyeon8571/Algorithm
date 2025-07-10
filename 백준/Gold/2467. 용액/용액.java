@@ -1,45 +1,51 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
         int N = Integer.parseInt(br.readLine());
-
-        StringTokenizer st = new StringTokenizer(br.readLine());
-
+        
         int[] arr = new int[N];
 
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        
         for (int i = 0; i < N; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
-
-        int p1 = 0;
-        int p2 = N-1;
-
-        int sum = Integer.MAX_VALUE;
-
-        int answer1 = arr[p1];
-        int answer2 = arr[p2];
-
-        while (p1 < p2) {
-            int temp = arr[p1] + arr[p2];
-            if (Math.abs(sum) > Math.abs(temp)) {
-                sum = temp;
-                answer1 = arr[p1];
-                answer2 = arr[p2];
+        
+        int left = 0;
+        int right = N-1;
+        
+        int lResult = arr[left];
+        int rResult = arr[right];
+        
+        int value = Math.abs(arr[left] + arr[right]);
+        
+        while (left < right) {
+            int val = arr[left] + arr[right];
+            if (Math.abs(val) < Math.abs(value)) {
+                lResult = arr[left];
+                rResult = arr[right];
+                value = Math.abs(val);
             }
-
-            if (temp < 0) {
-                p1++;
-            } else if (temp > 0){
-                p2--;
-            } else {
+            
+            if (arr[left] + arr[right] == 0) {
+                lResult = arr[left];
+                rResult = arr[right];
                 break;
             }
+            
+            if (arr[left] + arr[right] > 0) {
+                right--;
+            }
+            
+            if (arr[left] + arr[right] < 0) {
+                left++;
+            }
         }
-
-        System.out.println(answer1 + " " + answer2);
+        
+        System.out.print(lResult + " " + rResult);
     }
 }
