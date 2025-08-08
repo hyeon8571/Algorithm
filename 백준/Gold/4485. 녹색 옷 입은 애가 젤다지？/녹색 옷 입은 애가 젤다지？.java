@@ -1,94 +1,86 @@
-
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	
-	static class Place {
-		int y, x;
-		
-		public Place(int y, int x) {
-			this.y = y;
-			this.x = x;
-		}
-	}
-	
-	static int N;
-	
-	static int[][] grid;
-	
-	static int[][] visited;
-	
-	static int[] dx = new int[] {0, 1, 0, -1};
-	
-	static int[] dy = new int[] {-1, 0, 1, 0};
-	
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
-		int cnt = 1;
-		while (true) {
-			N = Integer.parseInt(br.readLine());
-			
-			if (N == 0) {
-				return;
-			}
-			
-			grid = new int[N][N];
-			
-			visited = new int[N][N];
-			
-			int count = 0;
-			
-			for (int i = 0; i < N; i++) {
-				StringTokenizer st = new StringTokenizer(br.readLine());
-				for (int j = 0; j < N; j++) {
-					grid[i][j] = Integer.parseInt(st.nextToken());
-					if (grid[i][j] == 0) {
-						count++;
-					}
-				} 
-			}
-			
-			bfs(0, 0);
-			System.out.println("Problem " + cnt++ + ": " + visited[N-1][N-1]);
-			
-		}
-		
-	}
-	
-	public static void bfs(int startY, int startX) {
-		ArrayDeque<Place> queue = new ArrayDeque<>();
-		
-		queue.add(new Place(startY, startX));
-		visited[startY][startX] = grid[startY][startX];
-		
-		while (!queue.isEmpty()) {
-			Place now = queue.pollFirst();
-			
-			for (int i = 0; i < 4; i++) {
-				int nx = now.x + dx[i];
-				int ny = now.y + dy[i];
-				
-				if (0 <= nx && nx < N && 0 <= ny && ny < N) {
-					if (ny == N-1 && nx == N-1 && grid[ny][nx] == 0) {
+    
+    public static class Place {
+        int y, x;
+        
+        public Place(int y, int x) {
+            this.y = y;
+            this.x = x;
+        }
+    }
+    
+    
+    static int N;
+    static int[][] grid;
+    static int[][] distance;
+    
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
+        int num = 1;
+        
+        while (true) {
+            N = Integer.parseInt(br.readLine());
+            
+            if (N == 0) {
+                break;
+            }
+            
+            grid = new int[N][N];
+            distance = new int[N][N];
+            
+            for (int i = 0; i < N; i++) {
+                StringTokenizer st = new StringTokenizer(br.readLine());
+                
+                for (int j = 0; j < N; j++) {
+                    grid[i][j] = Integer.parseInt(st.nextToken());                    
+                }
+            }
+            
+            bfs();
+            System.out.println("Problem " + num + ": " + distance[N-1][N-1]);
+            num++;      
+        }
+        
+        
+    }
+    
+    public static void bfs() {
+        int[] dy = new int[] {-1, 0, 1, 0};
+        int[] dx = new int[] {0, 1, 0, -1};
+        
+        Queue<Place> queue = new ArrayDeque<>();
+        
+        int val = grid[0][0];
+        distance[0][0] = val;
+        
+        queue.add(new Place(0, 0));
+        
+        while (!queue.isEmpty()) {
+            Place now = queue.poll();
+            
+            for (int i = 0; i < 4; i++) {
+                int ny = now.y + dy[i];
+                int nx = now.x + dx[i];
+                
+                if (0 <= ny && ny < N && 0 <= nx && nx < N) {
+                    
+                    if (ny == N-1 && nx == N-1 && grid[ny][nx] == 0) {
 						return;
 					}
-					if (visited[ny][nx] == 0) {
-						visited[ny][nx] = visited[now.y][now.x] + grid[ny][nx];
-						queue.add(new Place(ny, nx));
-					} else {
-						if (visited[ny][nx] > visited[now.y][now.x] + grid[ny][nx]) {
-							visited[ny][nx] = visited[now.y][now.x] + grid[ny][nx];
-							queue.add(new Place(ny, nx));
-						}
-					}
-				}
-			}
-		}
-	}
+                    
+                    if (distance[ny][nx] == 0) {
+                        distance[ny][nx] = grid[ny][nx] + distance[now.y][now.x];
+                        queue.add(new Place(ny, nx));
+                    } else if (grid[ny][nx] + distance[now.y][now.x] < distance[ny][nx]) {
+                        distance[ny][nx] = grid[ny][nx] + distance[now.y][now.x];
+                        queue.add(new Place(ny, nx));
+                    }
+                }
+            }
+        }
+    }
 }
