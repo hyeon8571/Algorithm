@@ -1,0 +1,16 @@
+-- 2021년에 가입한 전체 회원들 중 상품을 구매한 회원수와 상품을 구매한 회원의 비율(=2021년에 가입한 회원 중 상품을 구매한 회원수 / 2021년에 가입한 전체 회원 수)을 년, 월 별로 출력하는 SQL문을 작성해주세요. 상품을 구매한 회원의 비율은 소수점 두번째자리에서 반올림
+SELECT 
+    EXTRACT(YEAR FROM os.sales_date) AS YEAR,
+    EXTRACT(MONTH FROM os.sales_date) AS MONTH,
+    COUNT(DISTINCT os.user_id) AS PURCHASED_USERS,
+    ROUND(COUNT(DISTINCT os.user_id) / cnt.cnt, 1) AS PUCHASED_RATIO
+FROM 
+    ONLINE_SALE OS JOIN USER_INFO UI ON EXTRACT(YEAR FROM UI.JOINED) = 2021 AND OS.USER_ID = UI.USER_ID
+    LEFT JOIN
+    (
+        SELECT COUNT(*) AS CNT
+        FROM USER_INFO
+        WHERE EXTRACT(YEAR FROM JOINED) = 2021
+    ) CNT ON 1 = 1 
+GROUP BY EXTRACT(YEAR FROM SALES_DATE), EXTRACT(MONTH FROM SALES_DATE), CNT.CNT
+ORDER BY EXTRACT(YEAR FROM SALES_DATE), EXTRACT(MONTH FROM SALES_DATE)
